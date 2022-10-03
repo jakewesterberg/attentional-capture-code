@@ -7,7 +7,7 @@ function summary = compile_data()
 %% INPUT PARAMETERS
 summary.dir_in = 'Z:\_BACKUPS\Xwings_backup\V4\VS\';
 summary.dir_out = 'Z:\_DATA\MANUSCRIPTS\WesterbergEtAl_2022_NCOMMS_Feedforward\Revision_Data\';
-summary.d_type = {'mua', 'csd'};
+summary.d_type = {'csd'};
 summary.align_point = 'aot';
 
 summary.conditions = { ...
