@@ -7,16 +7,17 @@ function summary = compile_data()
 %% INPUT PARAMETERS
 summary.dir_in = 'Z:\_BACKUPS\Xwings_backup\V4\VS\';
 summary.dir_out = 'Z:\_DATA\MANUSCRIPTS\WesterbergEtAl_2022_NCOMMS_Feedforward\Revision_Data\';
-summary.d_type = {'csd'};
+summary.d_type = {'mua'};
 summary.align_point = 'aot';
 
 summary.conditions = { ...
-    ...'targ_cor', 'dist_adj_cor'; ...
-    ...'targ_cor', 'dist_opp_cor'; ...
-    ...'targ_cor_p0', 'dist_cor_p0';  ...
-    ...'targ_cor_p1', 'dist_cor_p1';  ...
-    ... 'targ_err', 'dist_err_sac'; ...
-    'targ_cor', 'dist_cor'}; ...
+    'targ_cor', 'dist_adj_cor'; ...
+    'targ_cor', 'dist_opp_cor'; ...
+    'targ_cor_p0', 'dist_cor_p0';  ...
+    'targ_cor_p1', 'dist_cor_p1';  ...
+    ...'targ_err', 'dist_err_sac' ...
+    ...'targ_cor', 'dist_cor' ...
+    };
     
 %% ANALYSIS
 good_files = [1 2	4	5	6	7	8	9	11	13	14	15	16	17	18	22	24	27	28	30	31	34	35	38	39	40	41	42	44	44];
@@ -136,8 +137,19 @@ for id = 1 : size(summary.d_type, 2)
                     [~,~,rnk_rt] = unique(reli_rt);
                     rnk_rt = rnk_rt./(max(rnk_rt)).*100;
 
-                    reli_loc = data.trial_by.targ_loc(both_cond) - analy.rf_loc;                  
-                    reli_dat = data.(trial_data)(:,:,both_cond);
+                    reli_loc = abs(data.trial_by.targ_loc(both_cond) -analy.rf_loc +180) -180;                  
+
+                    %switched around vals
+                    preave = nanmean(data.(trial_data)(:,1:data_info.evt_pre,both_cond),2);
+                    presd = nanstd(data.(trial_data)(:,1:data_info.evt_pre,both_cond),[],2);
+                    datlen = size(data.(trial_data)(:,:,both_cond), 2);
+                    trllen = size(data.(trial_data)(:,:,both_cond), 3);
+
+                    reli_dat = ((data.(trial_data)(:,:,both_cond) - ...
+                        repmat(preave, [1 datlen 1])) ./ ...
+                        repmat(presd, [1 datlen 1]));
+
+                    clear preave presd trllen
 
                     super_chan = analy.L4_bot - 9;
                     deep_chan = analy.L4_bot + 5;
@@ -165,15 +177,15 @@ for id = 1 : size(summary.d_type, 2)
 
                         reli_dat_pop_dist = cat(1, reli_dat_pop_dist, ...
                             nanmean(reli_dat(chan_vec, data_info.evt_pre-comp_pre:data_info.evt_pre+comp_post, n_cond1+ii),1), ...
-                            reli_dat(chan_vec, data_info.evt_pre-comp_pre:data_info.evt_pre+comp_post, n_cond1+ii));
+                            reli_dat(chan_vec, data_info.evt_pre-comp_pre:data_info.evt_pre+comp_post, n_cond1+ii)); %confirmed
 
-                        depth_pop_dist = cat(1, depth_pop_dist, (0:numel(chan_vec))');
-                        col_pop_dist = cat(1, col_pop_dist, zeros(numel(chan_vec)+1,1)+p_ctr);
-                        monk_pop_dist = cat(1, monk_pop_dist, repmat(analy.monkey, numel(chan_vec)+1, 1));
-                        rt_dist = cat(1, rt_dist, repmat(reli_rt(ii), numel(chan_vec)+1, 1));
-                        pr_dist = cat(1, pr_dist, repmat(reli_pr(ii), numel(chan_vec)+1, 1));
-                        rtrnk_dist = cat(1, rtrnk_dist, repmat(rnk_rt(ii), numel(chan_vec)+1, 1));
-                        dist_from_targ = cat(1, dist_from_targ, repmat(reli_loc(ii), numel(chan_vec)+1, 1));
+                        depth_pop_dist = cat(1, depth_pop_dist, (0:numel(chan_vec))'); %confirmed
+                        col_pop_dist = cat(1, col_pop_dist, zeros(numel(chan_vec)+1,1)+p_ctr); %confirmed
+                        monk_pop_dist = cat(1, monk_pop_dist, repmat(analy.monkey, numel(chan_vec)+1, 1)); %confirmed
+                        rt_dist = cat(1, rt_dist, repmat(reli_rt(ii +n_cond1), numel(chan_vec)+1, 1)); %bad %fixed
+                        pr_dist = cat(1, pr_dist, repmat(reli_pr(ii +n_cond1), numel(chan_vec)+1, 1)); %bad %fixed
+                        rtrnk_dist = cat(1, rtrnk_dist, repmat(rnk_rt(ii +n_cond1), numel(chan_vec)+1, 1)); %bad %fixed
+                        dist_from_targ = cat(1, dist_from_targ, repmat(reli_loc(ii +n_cond1), numel(chan_vec)+1, 1)); %bad %fixed
 
                     end   
                 end
@@ -185,7 +197,7 @@ for id = 1 : size(summary.d_type, 2)
         end
         
         save([summary.dir_out summary.d_type{id} '_' ...
-            summary.conditions{cp,1} '_' summary.conditions{cp, 2} '_compiled_for_PRA.mat'], ...
+            summary.conditions{cp,1} '_' summary.conditions{cp, 2} '_compiled_for_PRAv3.mat'], ...
             '-v7.3', '-nocompression', 'summary', 'reli_dat_pop_targ', ...
             'reli_dat_pop_dist', 'depth_pop_targ', 'depth_pop_dist', ...
             'col_pop_dist', 'col_pop_targ', 'monk_pop_targ', 'monk_pop_dist', ...
