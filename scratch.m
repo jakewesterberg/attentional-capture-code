@@ -84,18 +84,19 @@ plot(ts,nanmean(reli_dat_pop_targ(rtrnk_targ>25 & rtrnk_targ < 50,:)) - nanmean(
 plot(ts,nanmean(reli_dat_pop_targ(rtrnk_targ>0 & rtrnk_targ < 25,:)) - nanmean(reli_dat_pop_dist(rtrnk_dist>0 & rtrnk_dist < 25,:)), 'color', [0 0 1], 'linewidth', 1.5)
 set(gca,'xlim', [-25 200], 'XMinorTick','on','YMinorTick','on','Box','on')
 
-% figure
-% subplot(1,3,1);  hold on;
-% plot(-101:305, nanmean(reli_dat_pop_targ(:,:)), 'color', [0 1 1], 'linewidth', 1.5)
-% plot(-101:305, nanmean(reli_dat_pop_dist(dist_from_targ==-60,:)), 'color', [0 .66 1], 'linewidth', 1.5)
-% 
-% subplot(1,3,2);  hold on;
-% plot(-101:305, nanmean(reli_dat_pop_targ(:,:)), 'color', [0 1 1], 'linewidth', 1.5);
-% plot(-101:305, nanmean(reli_dat_pop_dist(dist_from_targ==-180,:)), 'color', [0 .66 1], 'linewidth', 1.5)
-% 
-% subplot(1,3,3);  hold on;
-% plot(-101:305, nanmean(reli_dat_pop_targ(:,:)) - nanmean(reli_dat_pop_dist(dist_from_targ==-60,:)), 'color', [0 1 1], 'linewidth', 1.5)
-% plot(-101:305, nanmean(reli_dat_pop_targ(:,:)) - nanmean(reli_dat_pop_dist(dist_from_targ==-180,:)), 'color', [0 .66 1], 'linewidth', 1.5)
+% Position plots
+figure
+subplot(1,3,1);  hold on;
+plot(-101:305, nanmean(reli_dat_pop_targ(:,:)), 'color', [0 1 1], 'linewidth', 1.5)
+plot(-101:305, nanmean(reli_dat_pop_dist(dist_from_targ==-60,:)), 'color', [0 .66 1], 'linewidth', 1.5)
+
+subplot(1,3,2);  hold on;
+plot(-101:305, nanmean(reli_dat_pop_targ(:,:)), 'color', [0 1 1], 'linewidth', 1.5);
+plot(-101:305, nanmean(reli_dat_pop_dist(dist_from_targ==-180,:)), 'color', [0 .66 1], 'linewidth', 1.5)
+
+subplot(1,3,3);  hold on;
+plot(-101:305, nanmean(reli_dat_pop_targ(:,:)) - nanmean(reli_dat_pop_dist(dist_from_targ==-60,:)), 'color', [0 1 1], 'linewidth', 1.5)
+plot(-101:305, nanmean(reli_dat_pop_targ(:,:)) - nanmean(reli_dat_pop_dist(dist_from_targ==-180,:)), 'color', [0 .66 1], 'linewidth', 1.5)
 
 
 figure; hold on;
